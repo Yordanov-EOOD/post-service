@@ -13,7 +13,7 @@ model Post {
   image     String?
   impresions Int     @default(0)
   publishedAt DateTime  @default(now())
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [authUserId])
   authorId  String
 }
 

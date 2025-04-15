@@ -10,10 +10,10 @@ import {
     const { userId } = req.user;
   
     try {
-      const yeet = await createYeetService({ content, image, authorId: userId });
+      const yeet = await createYeetService({ content, image, authUserId: userId });
       res.json(yeet);
     } catch (error) {
-      res.status(500).json({ error: 'Server error' });
+      res.status(500).json({ error: error });
     }
   };
   

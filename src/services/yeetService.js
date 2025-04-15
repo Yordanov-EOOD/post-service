@@ -2,7 +2,12 @@ import prisma from '../config/db.js';
 
 export const createYeetService = async (yeetData) => {
   return await prisma.post.create({
-    data: yeetData,
+    data: {
+      
+      content: yeetData.content,
+      image: yeetData.image,
+      authorId: yeetData.authUserId,
+    },
     include: { author: true },
   });
 };

@@ -47,7 +47,7 @@ app.use('/internal', verifyServiceToken, (req, res) => {
 // Global error handler
 app.use(errorHandler);
 
-const PORT = 3000;
+const PORT = 3000; // Reverted back to original port
 app.listen(PORT, () => {
   console.log(`Yeet Service: ${PORT}`);
 });

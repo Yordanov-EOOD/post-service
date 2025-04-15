@@ -16,6 +16,9 @@ const verifyJWT = (req, res, next) => {
     }
 
     req.user = user;
+    console.log('User verified:', user);
+    // Optionally, you can log the user ID or other details 
+    console.log('User ID:', user.userId);
     next();
   });
 };
