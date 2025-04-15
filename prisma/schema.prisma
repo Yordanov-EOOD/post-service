@@ -19,6 +19,8 @@ model Post {
 
 // Minimal User model for post relationships
 model User {
-  id       String   @id @default(cuid())
-  posts    Post[]
+  id        String   @id @default(cuid())
+  authUserId String  @unique
+  username   String  
+  posts     Post[]
 }
