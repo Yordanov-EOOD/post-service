@@ -9,6 +9,9 @@ import { createInternalUser } from './controllers/userController.js';
 
 const app = express();
 
+// Health check endpoint
+app.get('/health', (req, res) => res.send('OK'));
+
 // Allow requests from frontend/API gateway
 app.use(cors({
   origin: ['http://localhost:3000', 'http://api-gateway:80'],
