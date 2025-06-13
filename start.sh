@@ -9,5 +9,8 @@ while ! pg_isready -h "$DB_HOST" -p "$DB_PORT" -U "$DB_USER"; do
   sleep 2
 done
 
-npx prisma migrate deploy
-node src/index.js
+echo "Waiting for Kafka to be fully ready..."
+sleep 15  # Increase wait time for Kafka initialization
+
+echo "Starting Post/Yeet Service..."
+node --no-warnings src/index.js

@@ -12,14 +12,15 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY package*.json ./
-COPY prisma/ ./prisma/
+COPY post-service/package*.json ./
+COPY post-service/prisma/ ./prisma/
 
 # Install and rebuild native modules
 RUN npm ci --include=dev
 RUN npx prisma generate
 
-COPY src/ ./src
+COPY post-service/src/ ./src
+COPY shared/ ./shared/
 
 # Create a default .env file if none exists
 RUN touch .env
@@ -34,17 +35,15 @@ RUN apt-get update && \
     openssl \
     && rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+    WORKDIR /app
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/.env ./
-COPY start.sh ./
+    COPY --from=builder /app/node_modules ./node_modules
+    COPY --from=builder /app/package*.json ./
+    COPY --from=builder /app/prisma ./prisma
+    COPY --from=builder /app/src ./src
+    COPY --from=builder /app/shared ./shared
+    COPY --from=builder /app/.env ./
 
-# Make start script executable
-RUN chmod +x ./start.sh
 
 # Startup command
 CMD ["sh", "-c", "while ! pg_isready -h yeet-db -U $YEET_DB_USER -d $YEET_DB_NAME; do echo 'Waiting for database...'; sleep 2; done && npx prisma migrate deploy && node src/index.js"]
