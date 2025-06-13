@@ -7,26 +7,26 @@ import { performance as perfHooks } from 'perf_hooks';
 
 // Performance metrics collector
 export class PerformanceMonitor {
-    constructor() {
-        this.requests = new Map();
-        this.tracking = new Map(); // For startTracking/endTracking
-        this.metrics = {
-            requests: {
-                total: 0,
-                successful: 0,
-                failed: 0,
-                averageResponseTime: 0,
-                responseTimeSum: 0
-            },
-            endpoints: new Map(),
-            errors: new Map(),
-            slowRequests: []
-        };
-        this.slowRequestThreshold = 1000; // 1 second
-        this.maxSlowRequests = 100;
-    }    
+  constructor() {
+    this.requests = new Map();
+    this.tracking = new Map(); // For startTracking/endTracking
+    this.metrics = {
+        requests: {
+            total: 0,
+            successful: 0,
+            failed: 0,
+            averageResponseTime: 0,
+            responseTimeSum: 0
+        },
+        endpoints: new Map(),
+        errors: new Map(),
+        slowRequests: []
+    };
+    this.slowRequestThreshold = 1000; // 1 second
+    this.maxSlowRequests = 100;
+}    
     
-    // Direct record request method (used by middleware)
+// Direct record request method (used by middleware)
     recordRequest(method, path, statusCode, duration) {
         const isSuccessful = statusCode >= 200 && statusCode < 400;
         const endpoint = path;
@@ -437,24 +437,24 @@ export class ResourceMonitor {
         };
 
         // Calculate averages and peaks
-        const memoryKeys = Object.keys(memoryStats.current);
-        memoryKeys.forEach(key => {
-            const values = this.samples.map(s => s.memory[key]);
-            memoryStats.average[key] = Math.round(
-                values.reduce((sum, val) => sum + val, 0) / values.length
-            );
-            memoryStats.peak[key] = Math.max(...values);
-        });
+    const memoryKeys = Object.keys(memoryStats.current);
+    memoryKeys.forEach(key => {
+        const values = this.samples.map(s => s.memory[key]);
+        memoryStats.average[key] = Math.round(
+            values.reduce((sum, val) => sum + val, 0) / values.length
+        );
+        memoryStats.peak[key] = Math.max(...values);
+    });
 
-        return {
-            ...this.getCurrentUsage(),
-            statistics: {
-                memory: memoryStats,
-                sampleCount: this.samples.length,
-                monitoringDuration: Math.round((Date.now() - this.startTime) / 1000)
-            }
-        };
-    }
+    return {
+      ...this.getCurrentUsage(),
+      statistics: {
+      memory: memoryStats,
+      sampleCount: this.samples.length,
+      monitoringDuration: Math.round((Date.now() - this.startTime) / 1000)
+      }
+    };
+  }
 }
 
 // Create global monitor instances
@@ -463,66 +463,66 @@ export const resourceMonitor = new ResourceMonitor();
 
 // Middleware for automatic request tracking
 export const createPerformanceMiddleware = () => {
-    return (req, res, next) => {
-        const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-        const endpoint = req.route ? req.route.path : req.path;
-        const userAgent = req.get('User-Agent');
+  return (req, res, next) => {
+    const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const endpoint = req.route ? req.route.path : req.path;
+    const userAgent = req.get('User-Agent');
 
-        // Start tracking
-        performanceMonitor.startRequest(requestId, endpoint, req.method, userAgent);
+    // Start tracking
+    performanceMonitor.startRequest(requestId, endpoint, req.method, userAgent);
 
-        // Store request ID for later use
-        req.performanceId = requestId;
+    // Store request ID for later use
+    req.performanceId = requestId;
 
-        // Override res.end to capture completion
-        const originalEnd = res.end;
-        res.end = function(...args) {
-            // End tracking
-            performanceMonitor.endRequest(requestId, res.statusCode);
+    // Override res.end to capture completion
+    const originalEnd = res.end;
+    res.end = function(...args) {
+      // End tracking
+      performanceMonitor.endRequest(requestId, res.statusCode);
             
-            // Call original end
-            originalEnd.apply(this, args);
-        };
-
-        next();
+      // Call original end
+      originalEnd.apply(this, args);
     };
+
+    next();
+  };
 };
 
 // Start resource monitoring with intervals
 export const startResourceMonitoring = (intervalMs = 30000) => {
-    const interval = setInterval(() => {
-        resourceMonitor.sample();
-    }, intervalMs);
+  const interval = setInterval(() => {
+    resourceMonitor.sample();
+  }, intervalMs);
 
-    // Cleanup function
-    return () => clearInterval(interval);
+  // Cleanup function
+  return () => clearInterval(interval);
 };
 
 // Named export for compatibility with index.js
 export const performance = {
-    PerformanceMonitor,
-    ResourceMonitor,
-    performanceMonitor,
-    resourceMonitor,
-    createPerformanceMiddleware,
-    startResourceMonitoring,
-    recordRequest: (method, path, statusCode, duration) => performanceMonitor.recordRequest(method, path, statusCode, duration),
-    getMetrics: () => performanceMonitor.getMetrics(),
-    getDetailedStats: () => performanceMonitor.getDetailedStats(),
-    start: () => performanceMonitor.start(),
-    stop: () => performanceMonitor.stop()
+  PerformanceMonitor,
+  ResourceMonitor,
+  performanceMonitor,
+  resourceMonitor,
+  createPerformanceMiddleware,
+  startResourceMonitoring,
+  recordRequest: (method, path, statusCode, duration) => performanceMonitor.recordRequest(method, path, statusCode, duration),
+  getMetrics: () => performanceMonitor.getMetrics(),
+  getDetailedStats: () => performanceMonitor.getDetailedStats(),
+  start: () => performanceMonitor.start(),
+  stop: () => performanceMonitor.stop()
 };
 
 export default {
-    PerformanceMonitor,
-    ResourceMonitor,
-    performanceMonitor,
-    resourceMonitor,
-    createPerformanceMiddleware,
-    startResourceMonitoring,
-    recordRequest: (method, path, statusCode, duration) => performanceMonitor.recordRequest(method, path, statusCode, duration),
-    getMetrics: () => performanceMonitor.getMetrics(),
-    getDetailedStats: () => performanceMonitor.getDetailedStats(),
-    start: () => performanceMonitor.start(),
-    stop: () => performanceMonitor.stop()
+  PerformanceMonitor,
+  ResourceMonitor,
+  performanceMonitor,
+  resourceMonitor,
+  createPerformanceMiddleware,
+  startResourceMonitoring,
+  recordRequest: (method, path, statusCode, duration) => performanceMonitor.recordRequest(method, path, statusCode, duration),
+  getMetrics: () => performanceMonitor.getMetrics(),
+  getDetailedStats: () => performanceMonitor.getDetailedStats(),
+  start: () => performanceMonitor.start(),
+  stop: () => performanceMonitor.stop()
 };

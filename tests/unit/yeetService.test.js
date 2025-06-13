@@ -88,7 +88,7 @@ describe('YeetService', () => {
         if (!yeet || yeet.userId !== userId) {
           throw new Error('Yeet not found or unauthorized');
         }
-        
+       
         return await mockPrisma.yeet.delete({
           where: { id: yeetId }
         });
@@ -98,15 +98,12 @@ describe('YeetService', () => {
         const existingLike = await mockPrisma.like.findFirst({
           where: { yeetId, userId }
         });
-
         if (existingLike) {
           return { success: false, message: 'Already liked' };
         }
-
         await mockPrisma.like.create({
           data: { yeetId, userId }
         });
-
         return { success: true };
       },
 
@@ -118,7 +115,6 @@ describe('YeetService', () => {
         if (existingRetweet) {
           return { success: false, message: 'Already retweeted' };
         }
-
         await mockPrisma.retweet.create({
           data: { yeetId, userId }
         });
