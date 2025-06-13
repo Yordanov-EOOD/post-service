@@ -17,17 +17,21 @@ jobs:
       - name: Clone shared dependency
         run: git clone https://github.com/Yordanov-EOOD/shared.git shared
         
-      # Create .env file with secrets
+      # Create .env file with secrets      
       - name: Create .env file
         run: |
           cat > .env << EOF
-          DATABASE_URL=${{ secrets.YEET_DATABASE_URL }}
+          NODE_ENV=production
           YEET_DB_USER=${{ secrets.YEET_DB_USER }}
-          YEET_DB_NAME=${{ secrets.YEET_DB_NAME }}
-          ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET }}
-          REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET }}
+          YEET_DB_PASS=${{ secrets.YEET_DB_PASS  }}
+          YEET_DB_NAME=${{ secrets.YEET_DB_NAME  }}
+          DATABASE_URL=${{ secrets.YEET_DATABASE_URL  }}
+          AUTH_SERVICE_URL=${{ secrets.AUTH_SERVICE_URL  }}
+          USER_SERVICE_URL=${{ secrets.USER_SERVICE_URL  }}
+          ACCESS_TOKEN_SECRET=${{ secrets.ACCESS_TOKEN_SECRET  }}
+          REFRESH_TOKEN_SECRET=${{ secrets.REFRESH_TOKEN_SECRET  }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
           PORT=${{ secrets.YEET_SERVICE_PORT || '3000' }}
-          SERVICE_TOKEN=${{ secrets.SERVICE_TOKEN }}
           EOF
         
       - name: Set up Docker Buildx
@@ -43,6 +47,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          file: Dockerfile.ci
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/yeet-service:latest, ${{ secrets.DOCKERHUB_USERNAME }}/yeet-service:${{ github.sha }}
           cache-from: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/yeet-service:buildcache
