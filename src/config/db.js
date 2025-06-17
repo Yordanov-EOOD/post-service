@@ -7,9 +7,10 @@ const prismaClientSingleton = () => {
       db: {
         url: process.env.DATABASE_URL
       }
-    },
-    // Enable more verbose logging for debugging
-    log: ['query', 'info', 'warn', 'error'],
+    },    // Configure logging based on environment
+    log: process.env.NODE_ENV === 'development' 
+      ? ['query', 'info', 'warn', 'error']
+      : ['warn', 'error'],
     __internal: {
       engine: {
         // Configure connection pooling
