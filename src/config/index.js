@@ -22,15 +22,10 @@ class Configuration {
   /**
    * Validate that all required environment variables are present
    */
-  validateRequiredVariables() {    
-    const required = [
+  validateRequiredVariables() {      const required = [
       'NODE_ENV',
       'PORT',
-      'DB_HOST',
-      'DB_PORT',      
-      'DB_NAME',
-      'DB_USER',
-      'DB_PASS',
+      'YEET_DATABASE_URL',
       'ACCESS_TOKEN_SECRET'
     ];
 
@@ -61,15 +56,9 @@ class Configuration {
         limit: process.env.BODY_LIMIT || '10mb'
       },
       timeout: parseInt(process.env.SERVER_TIMEOUT, 10) || 30000
-    };
-
-    // Database Configuration
+    };    // Database Configuration
     this.database = {
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT, 10),
-      database: process.env.DB_NAME,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASS,
+      url: process.env.DATABASE_URL,
       dialect: 'postgres',
       pool: {
         max: parseInt(process.env.DB_POOL_MAX, 10) || 20,
