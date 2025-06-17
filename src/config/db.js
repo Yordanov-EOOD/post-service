@@ -33,7 +33,6 @@ const prisma = globalForPrisma.prisma || prismaClientSingleton();
 
 // Validate the Prisma client initialization
 console.log('Prisma client initialized');
-console.log('Available models:', Object.keys(prisma));
 
 if (process.env.NODE_ENV !== 'production') {
   globalForPrisma.prisma = prisma;

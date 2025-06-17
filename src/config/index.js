@@ -22,15 +22,16 @@ class Configuration {
   /**
    * Validate that all required environment variables are present
    */
-  validateRequiredVariables() {
+  validateRequiredVariables() {    
     const required = [
       'NODE_ENV',
       'PORT',
       'DB_HOST',
-      'DB_PORT',      'DB_NAME',
+      'DB_PORT',      
+      'DB_NAME',
       'DB_USER',
       'DB_PASS',
-      'JWT_SECRET'
+      'ACCESS_TOKEN_SECRET'
     ];
 
     const missing = required.filter(key => !process.env[key]);
@@ -87,7 +88,7 @@ class Configuration {
 
     // Redis Configuration    // Authentication & Security
     this.auth = {
-      jwtSecret: process.env.JWT_SECRET,
+      jwtSecret: process.env.ACCESS_TOKEN_SECRET,
       jwtExpiry: process.env.JWT_EXPIRY || '24h',
       bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS, 10) || 12,
       sessionSecret: process.env.SESSION_SECRET || 'default-session-secret'
